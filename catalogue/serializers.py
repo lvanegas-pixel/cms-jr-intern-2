@@ -23,3 +23,27 @@ class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = ['id', 'project', 'name', 'asset_type', 'is_public']
+
+    #Implementation of Rule 1
+    def validate(self, data):
+        """
+        Validating if project has only one asset type 3D
+        """
+        #We get the type of asset and its project
+        asset_type = data.get('asset_type')
+        project = data.get('project')
+
+        #Checking if the type is 3D
+        if asset_type == Asset.AssetType.MODEL_3D:
+            #Checking if the project already has another type 3D
+            existing_3d_asset = Asset.objects.filter(
+                project=project,
+                asset_type=Asset.AssetType.MODEL_3D
+            ).exists()
+
+            if existing_3d_asset:
+                raise serializers.ValidationError(
+                    "A project can only have one asset type model 3D."
+                )
+
+        return data
