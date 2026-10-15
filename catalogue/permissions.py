@@ -6,13 +6,9 @@ class IsAdminOrCommercial(permissions.BasePermission):
     Manages what each user is allowed to see
     """
     def has_permission(self, request, view):
-        #We test if the user is verified for any petition
+        #We test if the user is valid
         if not request.user or not request.user.is_authenticated:
             return False
-
-        #If the user is administrator, they have total access
-        if request.user.is_staff or request.user.groups.filter(name='admin').exists():
-            return True
 
         #Now, implementation of rule 3.
         if request.method == 'POST' and 'project' in request.data:
