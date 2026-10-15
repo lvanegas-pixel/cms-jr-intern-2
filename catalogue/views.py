@@ -14,6 +14,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return Project.objects.all()
         return Project.objects.filter(owner=user)
 
+    #I've added this one so they detect the owner automatically
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 class AssetViewSet(viewsets.ModelViewSet):
     serializer_class = AssetSerializer
     permission_classes = [IsAdminOrCommercial]

@@ -12,7 +12,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['id', 'name', 'owner', 'created_at']
         #Specifies a list of things that we want to include in the API
-        read_only_fields = ['created_at']
+        read_only_fields = ['created_at', 'owner']
 
 class AssetSerializer(serializers.ModelSerializer):
     name = serializers.CharField(
