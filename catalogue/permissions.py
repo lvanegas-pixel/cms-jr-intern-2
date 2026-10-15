@@ -27,7 +27,7 @@ class IsAdminOrCommercial(permissions.BasePermission):
         if request.user.is_staff or request.user.groups.filter(name='admin').exists():
             return True
 
-        #If they are commercial, we apply rule 3
+        #If they are commercial, we apply rule 2
         # + we test if it's a project or asset
         if hasattr(obj, 'owner'):
             return obj.owner == request.user
