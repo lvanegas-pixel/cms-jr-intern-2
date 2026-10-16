@@ -27,6 +27,6 @@ class AssetViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff or user.groups.filter(name='admin').exists():
             return Asset.objects.all()
-        #I've added in this part the ones with "is_public" as True by adding them with an or,
+        #This is to show the ones with "is_public" as True by adding them with an or,
         #and preventing duplicates with distinct
         return Asset.objects.filter(Q(project__owner=user) | Q(is_public=True)).distinct()
