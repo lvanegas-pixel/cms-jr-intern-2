@@ -10,7 +10,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [IsAdminOrCommercial]
 
-    filter_backends = SearchFilter
+    filter_backends = [SearchFilter]
     search_fields = ['name', 'owner__username']
 
     #We apply rule 2 because the one on permissions only affects individual "get"s
