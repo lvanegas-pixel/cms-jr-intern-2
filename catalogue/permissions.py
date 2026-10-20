@@ -12,7 +12,10 @@ class IsAdminOrCommercial(permissions.BasePermission):
 
         #Now, implementation of rule 3.
         if request.method == 'POST' and 'project' in request.data:
-            project_id = request.data.get('project')
+            try:
+                project_id = request.data.get('project')
+            except Project.DoesNotExist:
+                return False
             try:
                 project = Project.objects.get(id=project_id)
                 if project.owner != request.user:
