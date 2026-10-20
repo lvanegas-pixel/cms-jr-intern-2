@@ -32,12 +32,12 @@ pytest
 ```
 
 ## 3. Login
-POST http://127.0.0.1:8000/api/login/
+
+Hay un POST específico de Login tal que: 
+POST {{base_url}}/api/login/
 body: {
     "username": "username",
 	"password": "password"
 }
 
-example of result:
-
-test: token	64c1bb9b646b7a1ffca85b0f318eecb137974daf
+example of result: token	64c1bb9b646b7a1ffca85b0f318eecb137974daf
