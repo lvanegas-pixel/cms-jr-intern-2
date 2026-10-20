@@ -10,6 +10,11 @@ class Project(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True) #Automathic date
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'owner'], name='unique_name_per_owner'),
+        ]
+
     def __str__(self):
         return self.name
 

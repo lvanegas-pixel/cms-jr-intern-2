@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from rest_framework import serializers
 from .models import Project, Asset
 
@@ -13,6 +14,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'owner', 'created_at']
         #Specifies a list of things that we want to include in the API
         read_only_fields = ['created_at', 'owner']
+
+    def create(self, validated_data):
+        try:
+            return super().create(validated_data)
+        except IntegrityError:
+            raise serializers.ValidationError({"name": "Project already exists"})
 
 class AssetSerializer(serializers.ModelSerializer):
     name = serializers.CharField(
