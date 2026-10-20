@@ -37,11 +37,11 @@ Hay un POST específico de Login tal que:
 
 POST {{base_url}}/api/login/
 
-´´´
+```
 body: {
     "username": "username",
 	"password": "password"
 }
-´´
+```
 
 example of result: token	64c1bb9b646b7a1ffca85b0f318eecb137974daf
