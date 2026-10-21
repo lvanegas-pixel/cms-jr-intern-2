@@ -57,5 +57,3 @@ class AssetViewSet(viewsets.ModelViewSet):
             f' assets: {queryset.count()}'
         )
         return queryset
-
-## Documentación personal
