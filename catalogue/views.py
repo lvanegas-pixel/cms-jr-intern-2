@@ -17,8 +17,16 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_staff or user.groups.filter(name='admin').exists():
-            return Project.objects.all()
-        return Project.objects.filter(owner=user)
+            queryset = Project.objects.all()
+            print(
+                f'[DEBUG] ProjectViewSet.get_queryset() with admin user access.'
+                f' projects: {queryset.count()}'
+            )
+            return queryset
+        queryset = Project.objects.filter(owner=user)
+        print(f'[DEBUG] ProjectViewSet.get_queryset() with regular user access.'
+              f' projects: {queryset.count()}')
+        return queryset
 
     #I've added this one so they detect the owner automatically
     def perform_create(self, serializer):
@@ -35,7 +43,17 @@ class AssetViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_staff or user.groups.filter(name='admin').exists():
-            return Asset.objects.all()
+            queryset = Asset.objects.all()
+            print(
+                f'[DEBUG] AssetViewSet.get_queryset() with admin user access.'
+                f' assets: {queryset.count()}'
+            )
+            return queryset
         #This is to show the ones with "is_public" as True by adding them with an or,
         #and preventing duplicates with distinct
-        return Asset.objects.filter(Q(project__owner=user) | Q(is_public=True)).distinct()
+        queryset = Asset.objects.filter(Q(project__owner=user) | Q(is_public=True)).distinct()
+        print(
+            f'[DEBUG] AssetViewSet.get_queryset() with regular user access.'
+            f' assets: {queryset.count()}'
+        )
+        return queryset

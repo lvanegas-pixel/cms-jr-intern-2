@@ -4,6 +4,7 @@
 *.pem
 *.key
 credentials.json
+users.txt
 
 # ─── Python / venv ──────────────────────────────────────────
 venv/

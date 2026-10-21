@@ -11,6 +11,7 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) #Automathic date
 
     class Meta:
+        ordering = ['-id']
         constraints = [
             models.UniqueConstraint(fields=['name', 'owner'], name='unique_name_per_owner'),
         ]
@@ -35,6 +36,9 @@ class Asset(models.Model):
         choices=AssetType.choices,
     )
     is_public = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-id']
 
     def __str__(self):
         return f"{self.name} ({self.asset_type})"
