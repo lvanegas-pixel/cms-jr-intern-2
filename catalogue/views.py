@@ -1,9 +1,11 @@
 from django.db.models.query_utils import Q
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
+from django.contrib.auth.models import User
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import AllowAny
 from .models import Project, Asset
-from .serializers import ProjectSerializer, AssetSerializer
+from .serializers import ProjectSerializer, AssetSerializer, RegisterSerializer
 from .permissions import IsAdminOrCommercial
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -57,3 +59,8 @@ class AssetViewSet(viewsets.ModelViewSet):
             f' assets: {queryset.count()}'
         )
         return queryset
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
