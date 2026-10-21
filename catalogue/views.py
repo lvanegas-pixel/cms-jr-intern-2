@@ -58,6 +58,4 @@ class AssetViewSet(viewsets.ModelViewSet):
         )
         return queryset
 
-## Prints de debug en los endpoints
 ## Documentación personal
-## Busca OpenAPI-Swagger
