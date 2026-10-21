@@ -11,7 +11,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        ordering = ['-id']
         fields = ['id', 'name', 'owner', 'created_at']
         #Specifies a list of things that we want to include in the API
         read_only_fields = ['created_at', 'owner']
@@ -30,7 +29,6 @@ class AssetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asset
-        ordering = ['-id']
         fields = ['id', 'project', 'name', 'asset_type', 'is_public']
 
     #Implementation of Rule 1
