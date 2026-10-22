@@ -9,8 +9,6 @@ const projectNameInput = document.getElementById('project_name');
 const projectList = document.getElementById('project_list');
 const selectedProjectTitle = document.getElementById('selected-project-title');
 const assetList = document.getElementById('asset_list');
-const loginSection = document.getElementById('login-section');
-const logoutSection = document.getElementById('logout-section');
 const logoutBtn = document.getElementById('logout-btn');
 
 let authToken = localStorage.getItem('authToken') || '';
@@ -28,10 +26,10 @@ function clearError() {
 function getHeaders(includeContentType = true) {
     const headers = {};
     if (includeContentType) {
-        headers['Content-Type'] = 'application/json';
+        headers['content-Type'] = 'application/json';
     }
     if (authToken) {
-        headers['Authentication'] = `Token ${authToken}`;
+        headers['authorization'] = `Token ${authToken}`;
     }
     return headers;
 }
@@ -81,7 +79,8 @@ async function fetchProjects() {
             throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
         }
 
-        const projects = await response.json();
+        const data = await response.json();
+        const projects = data.results || data;
         renderProjects(projects);
     } catch (error) {
         showError(error.message);
@@ -146,7 +145,7 @@ async function fetchProjectAssets(projectId, projectName) {
     assetList.innerHTML = '<li>Loading Assets...</li>';
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/assets/`, {
+        const response = await fetch(`${API_BASE_URL}/assets/`, {
             headers: getHeaders(false)
         });
 
@@ -155,7 +154,8 @@ async function fetchProjectAssets(projectId, projectName) {
             throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
         }
 
-        const allAssets = await response.json();
+        const data = await response.json();
+        const allAssets = data.results || data;
         const projectAssets = allAssets.filter(asset => asset.project_id === projectId);
         renderAssets(projectAssets);
     } catch (error) {
@@ -179,12 +179,7 @@ function renderAssets(assets) {
     });
 }
 function updateAuthUI() {
-    if (authToken) {
-        loginSection.classList.add('hidden');
-        logoutSection.classList.remove('hidden');
-    } else {
-        loginSection.classList.remove('hidden');
-        logoutSection.classList.add('hidden');
+    if (!authToken) {
         projectList.innerHTML = '<li>Please log in to see projects</li>'
         assetList.innerHTML = '';
         selectedProjectTitle.textContent = 'Select a project to see their assets.';
