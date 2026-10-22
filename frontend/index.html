@@ -2,9 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects and assets manager</title>
 </head>
 <body>
+    <h1>Project manager / API Client</h1>
 
+    <div id="error-message" class="error"></div>
+
+    <section>
+        <h2>Login to get Token</h2>
+        <form id="login-form">
+            <label for="username"></label><input type="text" id="username" placeholder="username" required>
+            <label for="password"></label><input type="text" id="password" placeholder="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </section>
+
+    <section id="logout-section" class="hidden">
+        <h2>Session Active</h2>
+        <button id="logout-btn" type="button">Logout / Delete Token</button>
+    </section>
+
+    <section>
+        <h2>Create new project</h2>
+        <form id="project-form">
+            <label for="project_name"></label>
+            <input type="text" id="project_name" placeholder="Name of the project" required>
+            <button type="submit">Create</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>List of projects</h2>
+        <ul id="project_list">
+            <li>Loading projects...</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>List of assets</h2>
+        <p id="selected-project-title">Select a project to see their assets.</p>
+        <ul id="asset_list"></ul>
+    </section>
+
+    <script src="app.js"></script>
 </body>
 </html>
