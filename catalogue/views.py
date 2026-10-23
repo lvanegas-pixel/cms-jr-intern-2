@@ -39,7 +39,7 @@ class AssetViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrCommercial]
 
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['asset_type']
+    filterset_fields = ['project', 'asset_type']
     search_fields = ['name', 'project__owner__username']
 
     def get_queryset(self):

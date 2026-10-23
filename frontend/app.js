@@ -10,8 +10,20 @@ const projectList = document.getElementById('project_list');
 const selectedProjectTitle = document.getElementById('selected-project-title');
 const assetList = document.getElementById('asset_list');
 const logoutBtn = document.getElementById('logout-btn');
+const prevProjectsBtn = document.getElementById('prev-projects-btn');
+const nextProjectsBtn = document.getElementById('next-projects-btn');
+const prevAssetsBtn = document.getElementById('prev-assets-btn');
+const nextAssetsBtn = document.getElementById('next-assets-btn');
 
 let authToken = localStorage.getItem('authToken') || '';
+
+let currentProjectsNextUrl = null;
+let currentProjectsPrevUrl = null;
+
+let currentSelectedProjectId = null;
+let currentSelectedProjectName = '';
+let currentAssetsNextUrl = null;
+let currentAssetsPrevUrl = null;
 
 function showError(message) {
     errorMessage.textContent = message;
@@ -67,10 +79,10 @@ loginForm.addEventListener('submit', async (event) => {
     }
 })
 
-async function fetchProjects() {
+async function fetchProjects(url = `${API_BASE_URL}/projects/`) {
     clearError();
     try {
-        const response = await fetch(`${API_BASE_URL}/projects/`, {
+        const response = await fetch(url, {
             headers: getHeaders(false)
         });
 
@@ -81,12 +93,37 @@ async function fetchProjects() {
 
         const data = await response.json();
         const projects = data.results || data;
+
+        currentProjectsNextUrl = data.next || null;
+        currentProjectsPrevUrl = data.previous || null;
+
+        updateProjectsPaginationUI();
         renderProjects(projects);
     } catch (error) {
         showError(error.message);
         projectList.innerHTML = '<li>Could not load projects.</li>';
+        currentProjectsNextUrl = null;
+        currentProjectsPrevUrl = null;
+        updateProjectsPaginationUI();
     }
 }
+
+function updateProjectsPaginationUI() {
+    prevProjectsBtn.disabled = !currentProjectsPrevUrl;
+    nextProjectsBtn.disabled = !currentProjectsNextUrl;
+}
+
+prevProjectsBtn.addEventListener('click', () => {
+    if (currentProjectsPrevUrl) {
+        fetchProjects(currentProjectsPrevUrl);
+    }
+});
+
+nextProjectsBtn.addEventListener('click', () => {
+    if (currentProjectsNextUrl) {
+        fetchProjects(currentProjectsNextUrl);
+    }
+});
 
 function renderProjects(projects) {
     projectList.innerHTML = '';
@@ -139,13 +176,21 @@ projectForm.addEventListener('submit', async (event) => {
     }
 });
 
-async function fetchProjectAssets(projectId, projectName) {
+async function fetchProjectAssets(projectId, projectName, url = null) {
     clearError();
+
+    if (projectId !== undefined && projectId !== null) {
+        currentSelectedProjectId = projectId;
+        currentSelectedProjectName = projectName;
+    }
+
     selectedProjectTitle.textContent = `Assets of the project: ${projectName}`;
     assetList.innerHTML = '<li>Loading Assets...</li>';
 
+    const targetUrl = url || `${API_BASE_URL}/assets/?project=${currentSelectedProjectId}`
+
     try {
-        const response = await fetch(`${API_BASE_URL}/assets/`, {
+        const response = await fetch(targetUrl, {
             headers: getHeaders(false)
         });
 
@@ -155,14 +200,38 @@ async function fetchProjectAssets(projectId, projectName) {
         }
 
         const data = await response.json();
-        const allAssets = data.results || data;
-        const projectAssets = allAssets.filter(asset => asset.project === projectId);
-        renderAssets(projectAssets);
+        const assets = data.results || data;
+
+        currentAssetsNextUrl = data.next || null;
+        currentAssetsPrevUrl = data.previous || null;
+
+        updateAssetsPaginationUI();
+        renderAssets(assets);
     } catch (error) {
         showError(error.message);
         assetList.innerHTML = '<li>Error from loading Assets.</li>';
+        currentAssetsNextUrl = null;
+        currentAssetsPrevUrl = null;
+        updateAssetsPaginationUI();
     }
 }
+
+function updateAssetsPaginationUI() {
+    prevAssetsBtn.disabled = !currentAssetsPrevUrl;
+    nextAssetsBtn.disabled = !currentAssetsNextUrl;
+}
+
+prevAssetsBtn.addEventListener('click', () => {
+    if (currentAssetsPrevUrl) {
+        fetchProjectAssets(null, null, currentAssetsPrevUrl)
+    }
+});
+
+nextAssetsBtn.addEventListener('click', () => {
+    if (currentAssetsNextUrl) {
+        fetchProjectAssets(null, null, currentAssetsNextUrl)
+    }
+});
 
 function renderAssets(assets) {
     assetList.innerHTML = '';
@@ -183,6 +252,13 @@ function updateAuthUI() {
         projectList.innerHTML = '<li>Please log in to see projects</li>'
         assetList.innerHTML = '';
         selectedProjectTitle.textContent = 'Select a project to see their assets.';
+        currentProjectsNextUrl = null;
+        currentProjectsPrevUrl = null;
+        currentAssetsNextUrl = null;
+        currentAssetsPrevUrl = null;
+
+        updateProjectsPaginationUI();
+        updateAssetsPaginationUI();
     }
 }
 
