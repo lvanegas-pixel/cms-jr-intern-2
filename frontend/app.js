@@ -156,7 +156,7 @@ async function fetchProjectAssets(projectId, projectName) {
 
         const data = await response.json();
         const allAssets = data.results || data;
-        const projectAssets = allAssets.filter(asset => asset.project_id === projectId);
+        const projectAssets = allAssets.filter(asset => asset.project === projectId);
         renderAssets(projectAssets);
     } catch (error) {
         showError(error.message);
