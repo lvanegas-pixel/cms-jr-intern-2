@@ -52,7 +52,9 @@ class HasObjectPermissionsValidationTest(APITestCase):
         url = '/api/assets/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        asset_names = [asset['name'] for asset in response.data]
+
+        data = response.data.get('results', response.data)
+        asset_names = [asset['name'] for asset in data]
         self.assertIn('User 2 public asset', asset_names)
         self.assertIn('User 1 private asset', asset_names)
         self.assertNotIn('User 2 private asset', asset_names)
