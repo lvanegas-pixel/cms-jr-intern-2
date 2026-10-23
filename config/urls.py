@@ -18,11 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
+from catalogue.views import RegisterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('catalogue.urls')),
     path('api/login/', obtain_auth_token, name='api_token'),
+    path('api/register/', RegisterView.as_view(), name='auth-register'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
